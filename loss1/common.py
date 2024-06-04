@@ -6,7 +6,7 @@ import torch.nn.functional as F
 import torchvision.models as models
 from PIL import Image
 from torch.nn.functional import conv2d
-
+device=torch.device("cuda:5" if torch.cuda.is_available() else "cpu")
 
 class VGG19(nn.Module):
     def __init__(self, resize_input=False):
@@ -14,8 +14,8 @@ class VGG19(nn.Module):
         features = models.vgg19(pretrained=True).features
 
         self.resize_input = resize_input
-        self.mean = torch.Tensor([0.485, 0.456, 0.406]).cuda()
-        self.std = torch.Tensor([0.229, 0.224, 0.225]).cuda()
+        self.mean = torch.Tensor([0.485, 0.456, 0.406]).to(device)
+        self.std = torch.Tensor([0.229, 0.224, 0.225]).to(device)
         prefix = [1, 1, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5]
         posfix = [1, 2, 1, 2, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4]
         names = list(zip(prefix, posfix))

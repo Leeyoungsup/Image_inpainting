@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from .common import VGG19, gaussian_blur
-
+device=torch.device("cuda:5" if torch.cuda.is_available() else "cpu")
 
 class L1:
     def __init__(
@@ -18,7 +18,7 @@ class L1:
 class Perceptual(nn.Module):
     def __init__(self, weights=[1.0, 1.0, 1.0, 1.0, 1.0]):
         super(Perceptual, self).__init__()
-        self.vgg = VGG19().cuda()
+        self.vgg = VGG19().to(device)
         self.criterion = torch.nn.L1Loss()
         self.weights = weights
 
@@ -34,7 +34,7 @@ class Perceptual(nn.Module):
 class Style(nn.Module):
     def __init__(self):
         super(Style, self).__init__()
-        self.vgg = VGG19().cuda()
+        self.vgg = VGG19().to(device)
         self.criterion = torch.nn.L1Loss()
 
     def compute_gram(self, x):
@@ -94,9 +94,9 @@ class smgan:
             g_fake = F.interpolate(g_fake, size=(ht, wt), mode="bilinear", align_corners=True)
             d_fake = F.interpolate(d_fake, size=(ht, wt), mode="bilinear", align_corners=True)
             d_real = F.interpolate(d_real, size=(ht, wt), mode="bilinear", align_corners=True)
-        d_fake_label = gaussian_blur(masks, (self.ksize, self.ksize), (10, 10)).detach().cuda()
-        d_real_label = torch.zeros_like(d_real).cuda()
-        g_fake_label = torch.ones_like(g_fake).cuda()
+        d_fake_label = gaussian_blur(masks, (self.ksize, self.ksize), (10, 10)).detach().to(device)
+        d_real_label = torch.zeros_like(d_real).to(device)
+        g_fake_label = torch.ones_like(g_fake).to(device)
 
         dis_loss = self.loss_fn(d_fake, d_fake_label) + self.loss_fn(d_real, d_real_label)
         gen_loss = self.loss_fn(g_fake, g_fake_label) * masks / torch.mean(masks)
