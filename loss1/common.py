@@ -6,7 +6,7 @@ import torch.nn.functional as F
 import torchvision.models as models
 from PIL import Image
 from torch.nn.functional import conv2d
-device=torch.device("cuda:5" if torch.cuda.is_available() else "cpu")
+device=torch.device("cuda:4" if torch.cuda.is_available() else "cpu")
 
 class VGG19(nn.Module):
     def __init__(self, resize_input=False):

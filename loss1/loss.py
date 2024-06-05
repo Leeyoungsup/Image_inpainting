@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from .common import VGG19, gaussian_blur
-device=torch.device("cuda:5" if torch.cuda.is_available() else "cpu")
+device=torch.device("cuda:4" if torch.cuda.is_available() else "cpu")
 
 class L1:
     def __init__(
